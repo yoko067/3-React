@@ -14,11 +14,20 @@ function Square({value, onSquareClick}) {
 
 export default function Board() {
   const [squares, setSquares] = useState(Array(9).fill(null)); // 初期値は9個のnullを持った配列を初期値とする
+  const [xIsNext, setXIsNext] = useState(true); // OかXかを判断
 
   function handleClick (i) {
+    if(squares[i]){
+      return; // 値がnullでなければ何もしない
+    }
     const nextSquares = squares.slice(); // sliceメソッドを引数なしで使用して配列をコピー
-    nextSquares[i] = "X";
+    if(xIsNext){
+      nextSquares[i] = "X";
+    } else {
+      nextSquares[i] = "O"
+    }
     setSquares(nextSquares);
+    setXIsNext(!xIsNext);
   }
   return( 
     <>

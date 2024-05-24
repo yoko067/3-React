@@ -13,10 +13,8 @@ function Square({value, onSquareClick}) {
  );
 }
 
-// ボード全体についての関数(メイン)
-export default function Board() {
-  const [squares, setSquares] = useState(Array(9).fill(null)); // 初期値は9個のnullを持った配列を初期値とする
-  const [xIsNext, setXIsNext] = useState(true); // OかXかを判断
+// ボード全体についての関数
+function Board({xIsNext, squares, onPlay}) {
   const winner = calculateWinner(squares); 
 
   function handleClick (i) {
@@ -29,8 +27,7 @@ export default function Board() {
     } else {
       nextSquares[i] = "O"
     }
-    setSquares(nextSquares);
-    setXIsNext(!xIsNext);
+    onPlay(nextSquares);
   }
   // ゲームが決着したかを確かめ、勝利したプレイヤー、もしくは次のプレイヤーを表示
   let status;
@@ -64,6 +61,26 @@ export default function Board() {
     </>
     )
   }
+// ゲームの履歴全体を保持する関数 (トップレベルコンポーネント)
+export default function Game() {
+  const [xIsNext, setXIsNext] = useState(true);
+  const [history, setHistory] = useState([Array(9).fill(null)]); // [Array(9).fill(null)] -> []によって9つの要素を持った配列をさらに配列化する
+  const currentSquares = history[history.length - 1];
+  function handlePlay(nextSquares) {
+    setHistory([...history, nextSquares]); // ...(スプレッド構文): historyすべての項目を表す
+    setXIsNext(!xIsNext);
+  }
+  return (
+    <div className="game">
+      <div className="game-board">
+        <Board xIsNext={xIsNext} squares={currentSquares} onPlay={handlePlay} />
+      </div>
+      <div className="game-info">
+        <ol>{/*TODO*/}</ol>
+      </div>
+    </div>
+  );
+}
   
   // squaresを受け取り勝利判定をする関数
 function calculateWinner(squares) {

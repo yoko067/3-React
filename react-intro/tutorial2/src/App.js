@@ -63,22 +63,20 @@ function Board({xIsNext, squares, onPlay}) {
   }
 // ゲームの履歴全体を保持する関数 (トップレベルコンポーネント)
 export default function Game() {
-  const [xIsNext, setXIsNext] = useState(true);
   const [history, setHistory] = useState([Array(9).fill(null)]); // [Array(9).fill(null)] -> []によって9つの要素を持った配列をさらに配列化する
   const [currentMove, setCurrentMove] = useState(0);
   const currentSquares = history[currentMove];
+  const xIsNext = currentMove % 2 === 0; // 偶数番目か奇数番目で手番を決定
   
   function handlePlay(nextSquares) {
     // 過去にさかのぼった場合、戻った時点から先に上書きしていくように進める
     const nextHistory = [...history.slice(0, currentMove + 1), nextSquares]; // ...(スプレッド構文): historyすべての項目を表す
     setHistory(nextHistory);
     setCurrentMove(nextHistory.length - 1);  
-    setXIsNext(!xIsNext);
   }
 
   function jumpTo(nextMove) {
     setCurrentMove(nextMove);
-    setXIsNext(nextMove % 2 === 0);
   }
 
   const moves = history.map((squares, move) => {
